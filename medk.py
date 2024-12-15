@@ -252,16 +252,24 @@ profile.to_file("breast_cancer_report.html")
 
 # 13. AutoViz графики
 print("\nЗадание 13. Создание графиков AutoViz")
+
+# Создаем директорию для графиков, если её нет
+if not os.path.exists('autoviz_plots'):
+    os.makedirs('autoviz_plots')
+
 AV = AutoViz_Class()
 dft = AV.AutoViz(
     filename="",
     sep=",",
-    depVar="diagnosis",
-    dfte=df,
+    depVar="diagnosis",  # Целевая переменная
+    dfte=df,  # Наш датафрейм
     header=0,
-    verbose=0,
+    verbose=2,  # Увеличиваем уровень подробности вывода
     lowess=False,
-    chart_format="png"
+    chart_format="png",  # Формат графиков
+    save_plot_dir=os.path.abspath("autoviz_plots"),  # Абсолютный путь к директории
+    max_rows_analyzed=569,  # Анализируем все строки
+    max_cols_analyzed=32  # Анализируем все колонки
 )
 
 """
