@@ -15,6 +15,9 @@
 import os
 import io
 import pandas as pd
+import matplotlib
+matplotlib.use('TkAgg')  # Добавить эту строку перед импортом pyplot
+import matplotlib.pyplot as plt  # Добавляем этот импорт
 from pandas_profiling import ProfileReport
 from autoviz.AutoViz_Class import AutoViz_Class
 
@@ -189,13 +192,30 @@ print("-" * 50)
 print("\nЗадание 11. Визуализация через pandas:")
 
 # Гистограмма через pandas
-df['radius_mean'].hist(figsize=(10, 6))
+plt.figure(figsize=(10, 6))
+df['radius_mean'].hist()
+plt.title('Гистограмма распределения radius_mean')
+plt.xlabel('Значение')
+plt.ylabel('Частота')
+plt.savefig('histogram.png')  # Сохраняем в файл
+plt.close()
 
 # Диаграмма рассеивания через pandas
-df.plot(kind='scatter', x='radius_mean', y='texture_mean', figsize=(10, 6))
+plt.figure(figsize=(10, 6))
+df.plot(kind='scatter', x='radius_mean', y='texture_mean')
+plt.title('Диаграмма рассеивания radius_mean и texture_mean')
+plt.xlabel('Средний радиус')
+plt.ylabel('Средняя текстура')
+plt.savefig('scatter.png')  # Сохраняем в файл
+plt.close()
 
 # Диаграмма "ящик с усиками" через pandas
-df.boxplot(column='radius_mean', by='diagnosis', figsize=(10, 6))
+plt.figure(figsize=(10, 6))
+df.boxplot(column='radius_mean', by='diagnosis')
+plt.title('Диаграмма "ящик с усиками" для radius_mean по diagnosis')
+plt.suptitle('')  # Убираем автоматический заголовок
+plt.savefig('boxplot.png')  # Сохраняем в файл
+plt.close()
 
 # 12. Pandas-Profiling отчет
 print("\nЗадание 12. Создание отчета Pandas-Profiling")
@@ -222,7 +242,12 @@ df_report = df[[
     'perimeter_worst': 'Worst Perimeter'
 })
 
-profile = ProfileReport(df_report, title="Breast Cancer Wisconsin (Diagnostic) Dataset Analysis")
+profile = ProfileReport(
+    df_report, 
+    title="Breast Cancer Wisconsin (Diagnostic) Dataset Analysis",
+    minimal=False,  # Полный отчет вместо минимального
+    explorative=True  # Включить все исследовательские графики
+)
 profile.to_file("breast_cancer_report.html")
 
 # 13. AutoViz графики
