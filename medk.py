@@ -28,7 +28,7 @@ if not os.path.exists('breast_cancer.csv'):
 print("\nЗадание 1. Загрузка набора данных:")
 with io.open('breast_cancer.csv', 'r') as file:
     data = file.read()
-    
+
 # Загружаем данные из строки в pandas DataFrame
 df = pd.read_csv(io.StringIO(data))
 
@@ -68,13 +68,13 @@ df_numeric = df.select_dtypes(include=['float64', 'int64'])
 print("\nНабор 1 - только числовые признаки:", df_numeric.columns.tolist())
 
 # Второй набор - только средние значения
-# (выбраны только средние значения как базовые характеристики без ��чета стандартных отклонений)
+# (выбраны только средние значения как базовые характеристики без учета стандартных отклонений)
 mean_columns = [col for col in df.columns if 'mean' in col]
 df_means = df[mean_columns]
 print("\nНабор 2 - только средние значения:", df_means.columns.tolist())
 
 # Третий набор - только важные диагностические признаки
-# (выбраны ниболее значимые признаки для диагностики на основе медицинских показателей)
+# (выбраны ниблее значимые признаки для диагностики на основе медицинских показателей)
 diagnostic_columns = ['diagnosis', 'radius_mean', 'texture_mean', 'perimeter_mean', 'area_mean']
 df_diagnostic = df[diagnostic_columns]
 print("\nНабор 3 - важные диагностические признаки:", df_diagnostic.columns.tolist())
@@ -94,7 +94,7 @@ merged_outer = pd.merge(df, df_new, on='id', how='outer')
 print("\nРезультаты объединений:")
 print("-" * 50)
 print(f"Inner join (только совпадающие записи): {len(merged_inner)} записей")
-print(f"Left join (все записи из исходного ������абора): {len(merged_left)} записей")
+print(f"Left join (все записи из исходного набора): {len(merged_left)} записей")
 print(f"Right join (все записи из нового набора): {len(merged_right)} записей")
 print(f"Outer join (все записи из обоих наборов): {len(merged_outer)} записей")
 print("-" * 50)
@@ -208,8 +208,21 @@ df_report = df[[
     'smoothness_mean', 'compactness_mean', 'concavity_mean',
     # Худшие значения
     'radius_worst', 'texture_worst', 'perimeter_worst'
-]]
-profile = ProfileReport(df_report, title="Breast Cancer Dataset Analysis")
+]].rename(columns={
+    'diagnosis': 'Diagnosis (M/B)',
+    'radius_mean': 'Mean Radius',
+    'texture_mean': 'Mean Texture',
+    'perimeter_mean': 'Mean Perimeter',
+    'area_mean': 'Mean Area',
+    'smoothness_mean': 'Mean Smoothness',
+    'compactness_mean': 'Mean Compactness',
+    'concavity_mean': 'Mean Concavity',
+    'radius_worst': 'Worst Radius',
+    'texture_worst': 'Worst Texture',
+    'perimeter_worst': 'Worst Perimeter'
+})
+
+profile = ProfileReport(df_report, title="Breast Cancer Wisconsin (Diagnostic) Dataset Analysis")
 profile.to_file("breast_cancer_report.html")
 
 # 13. AutoViz графики
